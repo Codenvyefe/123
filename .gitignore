@@ -1,2 +1,5 @@
 **/hello_world
 *.o
+lab3/bin_*
+lab3/src/*.o
+lab3/src/mm_*.tmp

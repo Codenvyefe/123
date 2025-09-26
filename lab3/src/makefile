@@ -1,17 +1,26 @@
-CC=gcc
-CFLAGS=-I.
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11
+INCLUDES = -I.
+BIN_DIR = ..
 
-sequential_min_max : utils.o find_min_max.o utils.h find_min_max.h
-	$(CC) -o sequential_min_max find_min_max.o utils.o sequential_min_max.c $(CFLAGS)
+COMMON_SRCS = find_min_max.c utils.c
+COMMON_OBJS = $(COMMON_SRCS:.c=.o)
 
-parallel_min_max : utils.o find_min_max.o utils.h find_min_max.h
-	$(CC) -o parallel_min_max utils.o find_min_max.o parallel_min_max.c $(CFLAGS)
+all: sequential parallel
 
-utils.o : utils.h
-	$(CC) -o utils.o -c utils.c $(CFLAGS)
+sequential: sequential_min_max.c $(COMMON_OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $(BIN_DIR)/bin_sequential
 
-find_min_max.o : utils.h find_min_max.h
-	$(CC) -o find_min_max.o -c find_min_max.c $(CFLAGS)
+parallel: parallel_min_max.c $(COMMON_OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $(BIN_DIR)/bin_parallel
 
-clean :
-	rm utils.o find_min_max.o sequential_min_max parallel_min_max
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+clean:
+	rm -f $(COMMON_OBJS) $(BIN_DIR)/bin_sequential $(BIN_DIR)/bin_parallel mm_*.tmp
+run-seq:
+	../bin_sequential $(SEED) $(N)
+
+run-par:
+	../bin_parallel $(SEED) $(N) $(PNUM) $(EXTRA)
