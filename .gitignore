@@ -3,3 +3,4 @@
 lab3/bin_*
 lab3/src/*.o
 lab3/src/mm_*.tmp
+lab3/run_exec
